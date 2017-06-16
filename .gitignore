@@ -1,0 +1,11 @@
+# Unreal generated files that we don't need to track
+
+Build
+Binaries
+DerivedDataCache
+Intermediate
+Saved
+Content/StarterContent/
+
+# Visual studio generated files that we don't need to track
+*.VC.db
