@@ -9,3 +9,4 @@ Content/StarterContent/
 
 # Visual studio generated files that we don't need to track
 *.VC.db
+.vs/
