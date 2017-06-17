@@ -35,6 +35,5 @@ private:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
 
-	UPROPERTY(EditAnywhere)
 	AActor* ActorThatOpens; // Since pawn inherits from actor, this allows for objects and players to activate
 };
