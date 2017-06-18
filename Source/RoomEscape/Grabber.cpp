@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 #define OUT
 
@@ -36,7 +37,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector PlayerViewpointLocation;
 	FRotator PlayerViewpointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewpointLocation, OUT PlayerViewpointRotation); // Mark with macro to remind us the values are changing 
-	UE_LOG(LogTemp, Warning, TEXT("Player viewpoint has location %s and rotation %s."), *(PlayerViewpointLocation.ToString()), *(PlayerViewpointRotation.ToString()));
+	//UE_LOG(LogTemp, Warning, TEXT("Player viewpoint has location %s and rotation %s."), *(PlayerViewpointLocation.ToString()), *(PlayerViewpointRotation.ToString()));
+	
+	FVector	EndPoint = PlayerViewpointLocation + PlayerViewpointRotation.Vector()*Reach;
+	//FVector	EndPoint = PlayerViewpointLocation + FVector(0.0f, 0.0f, 100.0f);
+
+	DrawDebugLine(GetWorld(), 
+				  PlayerViewpointLocation,
+				  EndPoint,
+				  FColor(255, 0, 0),
+				  false,
+				  -1.0f,
+				  0,
+				  10.0f);
+	
 	// Raycast out to reach distance
 
 	// See what we hit
