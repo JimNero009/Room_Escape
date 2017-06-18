@@ -4,6 +4,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+#include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
 
 #define OUT
@@ -31,6 +32,17 @@ void UGrabber::BeginPlay()
 	if (!PhysicsHandle) {
 		UE_LOG(LogTemp, Error, TEXT("No physics handle on object %s."), *(GetOwner()->GetName()));
 	}
+
+	// Find the input component
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (!InputComponent) {
+		UE_LOG(LogTemp, Error, TEXT("No input component on object %s."), *(GetOwner()->GetName()));
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("Input component found on object %s."), *(GetOwner()->GetName()));
+		// Bind the input axis
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+
 }
 
 
@@ -73,5 +85,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		FString HitName = Hit.GetActor()->GetName();
 		UE_LOG(LogTemp, Warning, TEXT("Collision detected with %s."), *HitName);
 	}
+}
+
+void UGrabber::Grab() {
+	// Raycast and grab object in reach
+	UE_LOG(LogTemp, Warning, TEXT("Grab called!"));
 }
 
