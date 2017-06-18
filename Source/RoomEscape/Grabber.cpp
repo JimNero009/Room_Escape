@@ -41,6 +41,7 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Input component found on object %s."), *(GetOwner()->GetName()));
 		// Bind the input axis
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 
 }
@@ -90,5 +91,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 void UGrabber::Grab() {
 	// Raycast and grab object in reach
 	UE_LOG(LogTemp, Warning, TEXT("Grab called!"));
+}
+
+void UGrabber::Release() {
+	//Release object in grasp
+	UE_LOG(LogTemp, Warning, TEXT("Release called!"));
 }
 
