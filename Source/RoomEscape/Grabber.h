@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/ActorComponent.h"
 #include "Grabber.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ROOMESCAPE_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
@@ -27,5 +28,7 @@ public:
 private:
 
 	float Reach = 100.0f; // How far the player can reach to grab things
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	
 };
