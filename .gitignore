@@ -5,7 +5,8 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
-Content/StarterContent/
+Content/StarterContent/Textures
+Content/StarterContent/HDRI
 
 # Visual studio generated files that we don't need to track
 *.VC.db
