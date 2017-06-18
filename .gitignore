@@ -11,3 +11,4 @@ Content/StarterContent/HDRI
 # Visual studio generated files that we don't need to track
 *.VC.db
 .vs/
+Content/StarterContent/Maps/StarterMap_BuiltData.uasset
