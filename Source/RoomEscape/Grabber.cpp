@@ -10,24 +10,16 @@
 #define OUT
 
 // Sets default values for this component's properties
-UGrabber::UGrabber()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
+UGrabber::UGrabber() {
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-
 // Called when the game starts
-void UGrabber::BeginPlay()
-{
+void UGrabber::BeginPlay() {
 	Super::BeginPlay();
 
 	FindPhysicsHandleComponent();
 	FindAndSetupInputComponent();
-
 }
 
 void UGrabber::FindAndSetupInputComponent() {
@@ -35,7 +27,6 @@ void UGrabber::FindAndSetupInputComponent() {
 	if (!InputComponent) {
 		UE_LOG(LogTemp, Error, TEXT("No input component on object %s."), *(GetOwner()->GetName()));
 	} else {
-		UE_LOG(LogTemp, Warning, TEXT("Input component found on object %s."), *(GetOwner()->GetName()));
 		// Bind the input axis
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
@@ -50,37 +41,25 @@ void UGrabber::FindPhysicsHandleComponent() {
 	}
 }
 
-
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// TODO refactor this
-	/// Get player's viewpoint
-	FVector PlayerViewpointLocation;
-	FRotator PlayerViewpointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewpointLocation, OUT PlayerViewpointRotation); // Mark with macro to remind us the values are changing 
-																														  //UE_LOG(LogTemp, Warning, TEXT("Player viewpoint has location %s and rotation %s."), *(PlayerViewpointLocation.ToString()), *(PlayerViewpointRotation.ToString()));
-
-	FVector	EndPoint = PlayerViewpointLocation + PlayerViewpointRotation.Vector()*Reach;
-
 	// if the physics handle is attached, move the object
 	if (PhysicsHandle->GrabbedComponent) {
-		// move object we are holding
-		PhysicsHandle->SetTargetLocation(EndPoint);
+		MoveObject();
 	}
+}
 
+void UGrabber::MoveObject() {
+	GetPlayerLocationAndEndPoint(OUT PlayerViewpointLocation, OUT EndPoint);
+	// move object we are holding
+	PhysicsHandle->SetTargetLocation(EndPoint);
 }
 
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
-	/// Get player's viewpoint
-	FVector PlayerViewpointLocation;
-	FRotator PlayerViewpointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewpointLocation, OUT PlayerViewpointRotation); // Mark with macro to remind us the values are changing 
-																														  //UE_LOG(LogTemp, Warning, TEXT("Player viewpoint has location %s and rotation %s."), *(PlayerViewpointLocation.ToString()), *(PlayerViewpointRotation.ToString()));
-
-	FVector	EndPoint = PlayerViewpointLocation + PlayerViewpointRotation.Vector()*Reach;
+	GetPlayerLocationAndEndPoint(OUT PlayerViewpointLocation, OUT EndPoint);
 
 	/// Set up query params
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
@@ -95,16 +74,15 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
 		TraceParams
 	);
 
-	if (Hit.GetActor()) {
-		FString HitName = Hit.GetActor()->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Collision detected with %s."), *HitName);
-	}
-
 	return Hit;
 }
 
+void UGrabber::GetPlayerLocationAndEndPoint(FVector& PlayerViewpointLocation, FVector& EndPoint) {
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewpointLocation, OUT PlayerViewpointRotation); // Mark with macro to remind us the values are changing 
+	EndPoint = PlayerViewpointLocation + PlayerViewpointRotation.Vector()*Reach;
+}
+
 void UGrabber::Grab() {	
-	UE_LOG(LogTemp, Warning, TEXT("Grab called!"));
 	/// Try and reach any actors with physics body collision channel set using raycast
 	auto HitResult = GetFirstPhysicsBodyInReach();
 	
@@ -119,8 +97,6 @@ void UGrabber::Grab() {
 }
 
 void UGrabber::Release() {
-	UE_LOG(LogTemp, Warning, TEXT("Release called!"));
-	/// TODO release physics handle
 	if (PhysicsHandle->GrabbedComponent) {
 		PhysicsHandle->ReleaseComponent();
 	}
