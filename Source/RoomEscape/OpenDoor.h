@@ -41,7 +41,11 @@ private:
 	float DoorCloseDelay = 1.0f;
 
 	float LastDoorOpenTime = 0.0f;
+	
+	UPROPERTY(EditAnywhere)
+	float MassThreshold = 20.0f;
 
-	AActor* ActorThatOpens; // Since pawn inherits from actor, this allows for objects and players to activate
 	AActor* Owner;
+
+	float GetTotalMassOfActorsOnPlate() const;
 };
