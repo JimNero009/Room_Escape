@@ -13,21 +13,11 @@ UOpenDoor::UOpenDoor(){
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 // Called when the game starts
 void UOpenDoor::BeginPlay() {
 	Super::BeginPlay();
 	Owner = GetOwner();
 	CheckPressurePlatePointerAssigned();
-}
-
-void UOpenDoor::OpenDoor() {
-	//Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-	OnOpenRequest.Broadcast();
-}
-
-void UOpenDoor::CloseDoor() {	
-	Owner->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
 }
 
 void UOpenDoor::CheckPressurePlatePointerAssigned() {
@@ -43,13 +33,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	// poll the trigger volume every frame
 	if (GetTotalMassOfActorsOnPlate() > MassThreshold) { // if mass of objects is enough
-		OpenDoor();	
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpenRequest.Broadcast();
 	}
-
-	// Close door if it is time to
-	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
-		CloseDoor();
+	else {
+		OnCloseRequest.Broadcast();
 	}
 }
 
